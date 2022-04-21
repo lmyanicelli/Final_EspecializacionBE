@@ -6,8 +6,11 @@ import com.catalogservice.model.Serie;
 import com.catalogservice.model.dto.CatalogDTO;
 import com.catalogservice.model.dto.MovieDTO;
 import com.catalogservice.model.dto.SerieDTO;
+import com.catalogservice.queue.MovieListener;
+import com.catalogservice.queue.MovieSender;
 import com.catalogservice.service.CatalogService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +22,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/catalog")
 public class CatalogController {
+	private final MovieListener movieListener;
 	private CatalogService catalogService;
 
 	Logger logger = LoggerFactory.getLogger(CatalogController.class);
 
 	@Autowired
-	public CatalogController(CatalogService catalogService) {
+	public CatalogController(MovieListener movieListener,
+							 CatalogService catalogService) {
+		this.movieListener = movieListener;
 		this.catalogService = catalogService;
 	}
 
@@ -36,7 +42,9 @@ public class CatalogController {
 
 	@PostMapping("/movies")
 	public ResponseEntity<MovieDTO> saveMovie(@RequestBody Movie movie) {
-		return ResponseEntity.ok().body(catalogService.saveMovie(movie));
+		MovieDTO movieDB = catalogService.saveMovie(movie);
+		movieListener.receive(movie);
+		return ResponseEntity.ok().body(movieDB);
 	}
 
 	@PostMapping("/series")

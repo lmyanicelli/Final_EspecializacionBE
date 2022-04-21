@@ -1,4 +1,4 @@
-package com.catalogservice.repository;
+package com.catalogservice.client;
 
 import com.catalogservice.model.Serie;
 import org.springframework.cloud.openfeign.FeignClient;

@@ -1,0 +1,13 @@
+version: "3.2"
+services:
+  zipkin:
+    container_name: zipkin-server
+    image: openzipkin/zipkin:2
+    ports:
+      - 9411:9411
+  rabbitmq:
+    container_name: rabbitmq-server
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672

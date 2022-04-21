@@ -7,18 +7,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="api-gateway" />
-        <module name="movie-service" />
         <module name="configuration-service" />
         <module name="serie-service" />
-        <module name="service-registry" />
+        <module name="gateway-service" />
         <module name="catalog-service" />
+        <module name="api-gateway" />
+        <module name="movie-service" />
+        <module name="service-registry" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="api-gateway" target="17" />
       <module name="catalog-service" target="17" />
       <module name="configuration-service" target="17" />
+      <module name="gateway-service" target="17" />
       <module name="movie-service" target="17" />
       <module name="serie-service" target="17" />
       <module name="service-registry" target="17" />
@@ -29,6 +31,7 @@
       <module name="api-gateway" options="-parameters" />
       <module name="catalog-service" options="-parameters" />
       <module name="configuration-service" options="-parameters" />
+      <module name="gateway-service" options="-parameters" />
       <module name="movie-service" options="-parameters" />
       <module name="serie-service" options="-parameters" />
       <module name="service-registry" options="-parameters" />

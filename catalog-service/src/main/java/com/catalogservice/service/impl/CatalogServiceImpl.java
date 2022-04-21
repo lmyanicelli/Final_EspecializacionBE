@@ -2,8 +2,10 @@ package com.catalogservice.service.impl;
 
 import com.catalogservice.model.*;
 import com.catalogservice.model.dto.*;
-import com.catalogservice.repository.MovieClient;
-import com.catalogservice.repository.SerieClient;
+import com.catalogservice.model.Catalog;
+import com.catalogservice.client.MovieClient;
+import com.catalogservice.client.SerieClient;
+import com.catalogservice.repository.CatalogRepository;
 import com.catalogservice.service.CatalogService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -24,16 +26,19 @@ public class CatalogServiceImpl implements CatalogService {
 	private SerieClient serieClient;
 	private ModelMapper modelMapper;
 	private ObjectMapper mapper;
+	private CatalogRepository repository;
 
 	Logger logger = LoggerFactory.getLogger(CatalogServiceImpl.class);
 
 	@Autowired
 	public CatalogServiceImpl(MovieClient movieClient,
 							  SerieClient serieClient,
+							  CatalogRepository catalogRepository,
 							  ModelMapper modelMapper,
 							  ObjectMapper mapper) {
 		this.movieClient = movieClient;
 		this.serieClient = serieClient;
+		this.repository = catalogRepository;
 		this.modelMapper = modelMapper;
 		this.mapper = mapper;
 	}
@@ -41,6 +46,7 @@ public class CatalogServiceImpl implements CatalogService {
 	@Override
 	public MovieDTO saveMovie(Movie movie) {
 		Movie movieSaved = movieClient.saveMovie(movie);
+		logger.info("saveMovie de catalogService");
 		return mapper.convertValue(movieSaved, MovieDTO.class);
 		//luego enviar el mensaje con rabbitMQ
 	}
@@ -67,5 +73,23 @@ public class CatalogServiceImpl implements CatalogService {
 						new TypeToken<List<MovieDTO>>() {}.getType()))
 				.series(seriesByGenre)
 				.build();
+	}
+
+	@Override
+	public CatalogDTO persistMovie(Movie movie) {
+		Catalog catalog = repository.findByGenre(String.valueOf(movie.getGenre()));
+		if(catalog==null){
+			catalog = new Catalog();
+			catalog.setGenre(movie.getGenre());
+			List<Movie> movies = new ArrayList<>();
+			movies.add(movie);
+			catalog.setMovies(movies);
+		}else{
+			List<Movie> listMovies = catalog.getMovies();
+			listMovies.add(movie);
+			catalog.setMovies(listMovies);
+		}
+
+		return mapper.convertValue(repository.save(catalog), CatalogDTO.class);
 	}
 }

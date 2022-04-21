@@ -10,4 +10,5 @@ public interface CatalogService {
     MovieDTO saveMovie(Movie movie);
     SerieDTO saveSerie(Serie serie);
     CatalogDTO getCatalogByGenre(String genre);
+    CatalogDTO persistMovie(Movie movie);
 }
