@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: movie-service
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/moviedb?useUnicode=true\&characterEncoding=utf8&createDatabaseIfNotExist=true
+    username: root
+    password: mysql123
+  sql:
+ #   init:
+  #    mode: always
+   #   dataLocations: classpath:/genres.sql
+    show-sql: true
+  jpa:
+    deferDatasourceInitialization: true
+    hibernate:
+      ddlAuto: create-drop
+
+server:
+  port: 8061
+
+eureka:
+  client:
+    fetchRegistry: false
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    preferIpAddress: true
