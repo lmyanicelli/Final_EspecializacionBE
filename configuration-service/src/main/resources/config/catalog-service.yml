@@ -28,3 +28,7 @@ eureka:
 queue:
   movie:
     name: MovieQueue
+
+queueSerie:
+  serie:
+    name: SerieQueue

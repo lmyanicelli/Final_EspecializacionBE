@@ -2,6 +2,7 @@ package com.serieservice.controller;
 
 import com.serieservice.model.Genre;
 import com.serieservice.model.Serie;
+import com.serieservice.queue.SerieSender;
 import com.serieservice.service.SerieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +14,12 @@ import java.util.List;
 @RequestMapping("/series")
 public class SerieController {
     private SerieService serieService;
+    private final SerieSender serieSender;
 
     @Autowired
-    public SerieController(SerieService serieService) {
+    public SerieController(SerieService serieService, SerieSender serieSender) {
         this.serieService = serieService;
+        this.serieSender = serieSender;
     }
 
     @GetMapping("/{genre}")
@@ -26,6 +29,8 @@ public class SerieController {
 
     @PostMapping
     public ResponseEntity<Serie> saveSerie(@RequestBody Serie serie) {
-        return ResponseEntity.ok().body(serieService.save(serie));
+        Serie serieDB = serieService.save(serie);
+        serieSender.send(serieDB);
+        return ResponseEntity.ok().body(serieDB);
     }
 }

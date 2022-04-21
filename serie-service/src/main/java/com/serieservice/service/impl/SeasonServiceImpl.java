@@ -24,8 +24,8 @@ public class SeasonServiceImpl implements SeasonService {
         return repository.save(season);
     }
 
-    @Override
+  /*  @Override
     public Season findById(Long id) {
         return mapper.convertValue(repository.findById(id), Season.class);
-    }
+    }*/
 }

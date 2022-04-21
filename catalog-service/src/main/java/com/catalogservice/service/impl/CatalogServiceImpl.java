@@ -48,14 +48,12 @@ public class CatalogServiceImpl implements CatalogService {
 		Movie movieSaved = movieClient.saveMovie(movie);
 		logger.info("saveMovie de catalogService");
 		return mapper.convertValue(movieSaved, MovieDTO.class);
-		//luego enviar el mensaje con rabbitMQ
 	}
 
 	@Override
-	public SerieDTO saveSerie(Serie serie) {
+	public Serie saveSerie(Serie serie) {
 		Serie serieSaved = serieClient.saveSerie(serie);
-		return mapper.convertValue(serieSaved, SerieDTO.class);
-		//luego enviar el mensaje con rabbitMQ
+		return serieSaved;
 	}
 
 	@Override
@@ -91,5 +89,34 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 
 		return mapper.convertValue(repository.save(catalog), CatalogDTO.class);
+	}
+
+	@Override
+	public Catalog persistSerie(Serie serie) {
+		logger.info("persistSerie de catalogService");
+		Catalog catalog = repository.findByGenre(String.valueOf(serie.getGenre()));
+		if(catalog==null){
+			logger.info("catalog null");
+			catalog = new Catalog();
+			catalog.setGenre(serie.getGenre());
+			List<Serie> series = new ArrayList<>();
+			series.add(serie);
+			logger.info("series: ", series);
+			catalog.setSeries(series);
+		}else{
+			logger.info("catalog exist");
+			List<Serie> listSeries = catalog.getSeries();
+			if(listSeries==null){
+				listSeries = new ArrayList<>();
+			}
+			listSeries.add(serie);
+
+			logger.info("listSeries: " + listSeries);
+			catalog.setSeries(listSeries);
+		}
+
+		logger.info("catalog fuera del if: " + catalog.toString());
+
+		return repository.save(catalog);
 	}
 }

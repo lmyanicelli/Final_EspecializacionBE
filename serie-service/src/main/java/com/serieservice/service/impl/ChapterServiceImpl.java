@@ -6,6 +6,7 @@ import com.serieservice.model.Season;
 import com.serieservice.repository.ChapterRepository;
 import com.serieservice.repository.SeasonRepository;
 import com.serieservice.service.ChapterService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class ChapterServiceImpl implements ChapterService {
     }
 
     @Override
-    public Chapter findById(Long id) {
+    public Chapter findById(ObjectId id) {
         return mapper.convertValue(repository.findById(id), Chapter.class);
     }
 }

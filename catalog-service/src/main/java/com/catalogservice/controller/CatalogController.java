@@ -1,16 +1,13 @@
 package com.catalogservice.controller;
 
-import com.catalogservice.model.Catalog;
 import com.catalogservice.model.Movie;
 import com.catalogservice.model.Serie;
 import com.catalogservice.model.dto.CatalogDTO;
 import com.catalogservice.model.dto.MovieDTO;
 import com.catalogservice.model.dto.SerieDTO;
 import com.catalogservice.queue.MovieListener;
-import com.catalogservice.queue.MovieSender;
+import com.catalogservice.queue.SerieListener;
 import com.catalogservice.service.CatalogService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,14 +20,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/catalog")
 public class CatalogController {
 	private final MovieListener movieListener;
+	private final SerieListener serieListener;
 	private CatalogService catalogService;
 
 	Logger logger = LoggerFactory.getLogger(CatalogController.class);
 
 	@Autowired
 	public CatalogController(MovieListener movieListener,
-							 CatalogService catalogService) {
+							 SerieListener serieListener, CatalogService catalogService) {
 		this.movieListener = movieListener;
+		this.serieListener = serieListener;
 		this.catalogService = catalogService;
 	}
 
@@ -48,7 +47,9 @@ public class CatalogController {
 	}
 
 	@PostMapping("/series")
-	public ResponseEntity<SerieDTO> saveSerie(@RequestBody Serie serie) {
-		return ResponseEntity.ok().body(catalogService.saveSerie(serie));
+	public ResponseEntity<Serie> saveSerie(@RequestBody Serie serie) {
+		Serie serieDB = catalogService.saveSerie(serie);
+		serieListener.receive(serie);
+		return ResponseEntity.ok().body(serieDB);
 	}
 }
