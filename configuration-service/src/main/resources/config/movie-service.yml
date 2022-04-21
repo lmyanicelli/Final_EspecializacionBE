@@ -28,6 +28,12 @@ eureka:
   instance:
     preferIpAddress: true
 
+  zipkin:
+    baseUrl: http://localhost:9411/
+    enabled: true
+    sender:
+      type: rabbit
+
   rabbitmq:
     username: guest
     password: guest

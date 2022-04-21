@@ -65,12 +65,17 @@ public class CatalogServiceImpl implements CatalogService {
 				.movies(moviesByGenre)
 				.series(seriesByGenre)
 				.build();*/
-		return CatalogDTO.builder()
-				.genre(Genre.valueOf(genre))
-				.movies(modelMapper.map(moviesByGenre,
-						new TypeToken<List<MovieDTO>>() {}.getType()))
-				.series(seriesByGenre)
-				.build();
+		if(moviesByGenre!=null || seriesByGenre!=null){
+			return CatalogDTO.builder()
+					.genre(Genre.valueOf(genre))
+					.movies(modelMapper.map(moviesByGenre,
+							new TypeToken<List<MovieDTO>>() {}.getType()))
+					.series(seriesByGenre)
+					.build();
+		}else{
+			return null;
+		}
+
 	}
 
 	@Override
